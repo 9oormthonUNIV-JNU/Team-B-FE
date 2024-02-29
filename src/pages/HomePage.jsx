@@ -1,10 +1,12 @@
 import React from "react";
 import LongButton from "../components/LongButton";
 import FriendsListItem from "../components/FriendsListItem";
+import TopNavBarMain from "../components/TopNavBarMain";
 
 const HomePage = () => {
   return (
     <div>
+      <TopNavBarMain />
       <FriendsListItem
         fundingId={1}
         userImage="/assets/images/person.png"
