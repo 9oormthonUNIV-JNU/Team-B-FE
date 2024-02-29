@@ -25,7 +25,6 @@ const HomePage = () => {
         fundingProgress={75}
         productImage="/assets/images/ps5.png"
       />
-      <LongButton label="결제하기" onClick={() => {}} />
     </div>
   );
 };
