@@ -10,6 +10,7 @@ import FundingNotificationPage from "./pages/FundingNotificationPage";
 import FundingPage from "./pages/FundingPage";
 import FundingShipmentPage from "./pages/FundingShipmentPage";
 import FundingPaymentPage from "./pages/FundingPaymentPage";
+import FundingPaymentResultPage from "./pages/FundingPaymentResultPage";
 import MyHistoryPage from "./pages/MyHistoryPage";
 import MyLikedPage from "./pages/MyLikedPage";
 import MyRecentPage from "./pages/MyRecentPage";
@@ -48,6 +49,10 @@ function App() {
           <Route
             path="/funding/:fundingId/payment"
             element={<FundingPaymentPage />}
+          />
+          <Route
+            path="/funding/:fundingId/payment/result"
+            element={<FundingPaymentResultPage />}
           />
           <Route path="/mypage/history" element={<MyHistoryPage />} />
           <Route path="/mypage/liked" element={<MyLikedPage />} />
