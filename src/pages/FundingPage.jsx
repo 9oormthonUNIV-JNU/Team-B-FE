@@ -120,7 +120,7 @@ const FundingPage = () => {
         <LongButton
           label="펀딩하기"
           onClick={() => {
-            navigate("/funding/1/shipment");
+            navigate("/funding/1/payment");
           }}
         />
       </Wrapper>
