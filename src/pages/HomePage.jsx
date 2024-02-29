@@ -1,10 +1,16 @@
 import React from "react";
-import LongButton from "../components/LongButton";
 import FriendsListItem from "../components/FriendsListItem";
+import styled from "styled-components";
+
+const Heading = styled.h1`
+  font-size: 32px;
+  font-weight: 700;
+`;
 
 const HomePage = () => {
   return (
-    <div>
+    <>
+      <Heading>친구</Heading>
       <FriendsListItem
         fundingId={1}
         userImage="/assets/images/person.png"
@@ -25,7 +31,7 @@ const HomePage = () => {
         fundingProgress={75}
         productImage="/assets/images/ps5.png"
       />
-    </div>
+    </>
   );
 };
 
