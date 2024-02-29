@@ -1,5 +1,4 @@
 import React from "react";
-import LongButton from "../components/LongButton";
 import FriendsListItem from "../components/FriendsListItem";
 
 const HomePage = () => {
