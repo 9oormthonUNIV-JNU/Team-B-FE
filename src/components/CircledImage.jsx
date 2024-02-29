@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
+  width: ${(props) => (props.width ? props.width + "px" : "56px")};
+  height: ${(props) => (props.height ? props.height + "px" : "56px")};
 `;
 
 const Circle = styled.div`
@@ -25,14 +27,13 @@ const Dday = styled.div`
   border-radius: 9999px;
   padding: 0 8px;
   color: #ffffff;
-  font-size: 14px;
   bottom: 0;
   right: 0;
 `;
 
 const CircledImage = ({ src, alt, width, height, dDay }) => {
   return (
-    <Wrapper>
+    <Wrapper width={width} height={height}>
       <Circle width={width} height={height}>
         <Image src={src} alt={alt} />
       </Circle>
