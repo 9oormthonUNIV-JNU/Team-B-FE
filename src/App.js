@@ -16,8 +16,11 @@ import MyLikedPage from "./pages/MyLikedPage";
 import MyRecentPage from "./pages/MyRecentPage";
 import NavLayout from "./layouts/NavLayout";
 import Layout from "./layouts/Layout";
+import ReactModal from "react-modal";
 
 function App() {
+  ReactModal.setAppElement("#root");
+
   return (
     <BrowserRouter>
       <Routes>
