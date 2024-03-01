@@ -26,7 +26,7 @@ const Modal = ({ isOpen, title, children, handleClick }) => {
       transform: "translate(-50%, -50%)",
       WebkitTransform: "translate(-50%, -50%)",
       width: "80%",
-      height: "max-content",
+      maxHeight: "max-content",
       borderRadius: "12px",
       boxShadow:
         "0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.1)",
