@@ -13,7 +13,7 @@ const Inner = styled.div`
   width: ${(props) => props.width + "%"};
   background: linear-gradient(to right, #ffdb01, #e75025);
   border-radius: 9999px;
-  height: 12px;
+  height: 100%;
 `;
 
 const Number = styled.div`
