@@ -34,7 +34,7 @@ const NotificationsListItem = ({
   return (
     <>
       {/* 본인의 펀딩 상품으로 product 변경 요망 */}
-      <Wrapper to={`/funding/${fundingId}/shipment`}>
+      <Wrapper to={`/funding/${fundingId}`}>
         <SectionLeft>
           <CircledImage src={productImage} alt={productName} />
           <Notification>
