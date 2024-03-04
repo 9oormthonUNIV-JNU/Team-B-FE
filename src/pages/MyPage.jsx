@@ -25,6 +25,11 @@ const MyPage = () => {
         label="찜하기"
         to="/mypage/liked"
       />
+      <MyPageListItem
+        iconSrc="/assets/MyPage/Time.svg"
+        label="최근 본 상품"
+        to="/mypage/recent"
+      />
       <MyPageListItem iconSrc="/assets/MyPage/Signout.svg" label="로그아웃" />
     </>
   );
