@@ -3,7 +3,7 @@ import ImageCarousel from "../components/ImageCarousel";
 import styled from "styled-components";
 import ProductItem from "../components/ProductItem";
 import Spinner from "../components/Spinner";
-import axios from "axios";
+import { instance } from "../apis/instance";
 
 const Heading = styled.h1`
   font-size: 32px;
@@ -28,7 +28,7 @@ const ShopPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/products");
+        const response = await instance.get("/products");
         setProducts(response.data.response);
       } catch (e) {
         console.log(e);

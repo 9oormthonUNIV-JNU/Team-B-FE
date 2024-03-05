@@ -45,12 +45,12 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "msw": "^2.2.2"
-  },
   "msw": {
     "workerDirectory": [
       "public"
     ]
+  },
+  "devDependencies": {
+    "msw": "^2.2.2"
   }
 }

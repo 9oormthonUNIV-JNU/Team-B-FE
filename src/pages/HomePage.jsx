@@ -17,7 +17,6 @@ const HomePage = () => {
       {isLoggedIn ? (
         <>
           <Heading>친구</Heading>
-          <a href="http://3.37.63.176:8080/users/login">카카오 로그인</a>
           <FriendsListItem
             fundingId={1}
             userImage="/assets/images/person.png"
