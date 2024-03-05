@@ -17,6 +17,7 @@ import MyRecentPage from "./pages/MyRecentPage";
 import NavLayout from "./layouts/NavLayout";
 import Layout from "./layouts/Layout";
 import ReactModal from "react-modal";
+import KakaoLoginFallback from "./components/KakaoLoginFallback";
 
 function App() {
   ReactModal.setAppElement("#root");
@@ -60,6 +61,8 @@ function App() {
           <Route path="/mypage/history" element={<MyHistoryPage />} />
           <Route path="/mypage/liked" element={<MyLikedPage />} />
           <Route path="/mypage/recent" element={<MyRecentPage />} />
+
+          <Route path="/auth" element={<KakaoLoginFallback />} />
         </Route>
       </Routes>
     </BrowserRouter>

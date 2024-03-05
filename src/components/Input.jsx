@@ -2,7 +2,6 @@ import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 const StyledInput = styled.input`
-  width: auto;
   border-radius: 12px;
   padding: 16px;
   width: 100%;
