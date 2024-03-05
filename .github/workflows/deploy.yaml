@@ -8,24 +8,27 @@ on:
 jobs:
   deploy:
     name: Build, Deploy to S3 bucket
-    runs-on: [ubuntu-latest]
-
-    strategy:
-      matrix:
-        node-version: [14.15.x]
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout codes
+      - uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: latest
 
-      - name: Npm install
+      - name: .env setting
+        run: |
+          echo "REACT_APP_KAKAO_REST_API_KEY=${{ secrets.REACT_APP_KAKAO_REST_API_KEY }}" >> .env
+          echo "REACT_APP_KAKAO_REDIRECT_URI=${{ secrets.REACT_APP_KAKAO_REDIRECT_URI }}" >> .env
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env
+
+      - name: NPM install
         run: npm install
 
-      - name: Build
+      - name: NPM Build
         run: npm run build
 
       - name: Transfer to S3 for serving static

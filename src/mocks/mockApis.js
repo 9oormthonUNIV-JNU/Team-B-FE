@@ -19,7 +19,7 @@ export const products = {
 };
 
 // 상품 상세 페이지
-export const products_id = {
+export const productDetail = {
   success: true,
   response: [
     {
@@ -42,14 +42,14 @@ export const wishlists = {
 };
 
 // 찜하기 취소
-export const wishlist_id = {
+export const cancelWishlist = {
   success: true,
   response: null,
   error: null,
 };
 
 // 펀딩 등록
-export const fundings = {
+export const registerFunding = {
   success: true,
   response: null,
   error: null,
@@ -57,7 +57,7 @@ export const fundings = {
 
 // Home
 // 친구의 펀딩 내역
-export const friendsFunding = {
+export const friendsList = {
   success: true,
   response: [
     {
@@ -101,7 +101,7 @@ export const friendsFunding = {
 };
 
 // 펀딩 상세 페이지
-export const fundings_id = {
+export const fundingDetail = {
   success: true,
   response: [
     {
@@ -121,7 +121,7 @@ export const fundings_id = {
 };
 
 // 펀딩하기 페이지 불러오기
-export const fundings_id_prepare = {
+export const fundingPrepare = {
   success: true,
   response: {
     userId: 1,

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { login } from "../store/slices/authSlice";
-import axios from "axios";
+import { loginThunk } from "../store/slices/authSlice";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const Container = styled.div`
   position: relative;
@@ -26,40 +26,23 @@ const Text = styled.div`
 
 const KakaoLoginFallback = () => {
   const code = new URL(window.location.href).searchParams.get("code");
-  console.log(code);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [accessTokenFetching, setAccessTokenFetching] = useState(false);
-
-  const getAccessToken = async () => {
-    if (accessTokenFetching) return;
-
-    console.log("getAccessToken 호출");
-
-    try {
-      setAccessTokenFetching(true);
-
-      const response = await axios.post(
-        "http://3.37.63.176:8080/users/kakao-login",
-        { code }
-      );
-      const accessToken = response.data.accessToken;
-      console.log("accessToken: ", accessToken);
-
-      dispatch(login());
-
-      setAccessTokenFetching(false);
-      navigate("/");
-    } catch (error) {
-      console.error("Error: " + error);
-      setAccessTokenFetching(false);
-    }
-  };
-
   useEffect(() => {
-    getAccessToken();
-  }, []);
+    dispatch(loginThunk(code))
+      .then(unwrapResult)
+      .then((response) => {
+        localStorage.setItem("auth", response.data.tokenDTO.accessToken);
+      })
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [dispatch, navigate, code]);
 
   return (
     <Container>

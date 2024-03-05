@@ -1,8 +1,8 @@
 import React from "react";
 
 const SocialKakao = () => {
-  const REST_API_KEY = "";
-  const REDIRECT_URI = "http://localhost:3000/auth";
+  const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+  const REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
   const KAKAO_URL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
 
   const handleLogin = () => {
