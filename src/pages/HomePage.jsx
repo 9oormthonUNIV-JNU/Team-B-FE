@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FriendsListItem from "../components/FriendsListItem";
 import styled from "styled-components";
 
