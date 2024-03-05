@@ -3,6 +3,7 @@ import LongButton from "../components/LongButton";
 import styled from "styled-components";
 import Modal from "../components/Modal";
 import { useNavigate } from "react-router-dom";
+import TopNavBarTitle from "../components/TopNavBarTitle";
 
 const ImageWrapper = styled.div`
   width: 100%;
@@ -70,8 +71,10 @@ const ProductDetailPage = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+
   return (
     <>
+    <TopNavBarTitle title="상품 상세페이지" />
       <ImageWrapper>
         <Image src="/assets/products/ps5.png" alt="ps5" />
       </ImageWrapper>
