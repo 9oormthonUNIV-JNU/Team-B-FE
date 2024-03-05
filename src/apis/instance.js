@@ -3,16 +3,13 @@ import axios from "axios";
 export const instance = axios.create({
   timeout: 5000,
   baseURL: "http://3.37.63.176:8080/",
-  headers: {
-    "Access-Control-Allow-Origin": "http://localhost:3000",
-    "Access-Control-Allow-Credentials": "true",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("auth");
-    config.headers.Authorization = token;
+    // const token = localStorage.getItem("auth");
+    // config.headers.Authorization = token;
     return config;
   },
   (error) => {

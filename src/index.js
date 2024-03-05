@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { worker } from "./mocks/worker";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 function prepare() {
   if (process.env.NODE_ENV === "development") {
@@ -16,7 +18,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 prepare().then(() => {
   root.render(
     <React.StrictMode>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </React.StrictMode>
   );
 });
