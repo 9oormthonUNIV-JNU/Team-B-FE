@@ -8,7 +8,7 @@ export const loginThunk = createAsyncThunk(
       const response = await login(code);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error).response.data;
     }
   }
 );
