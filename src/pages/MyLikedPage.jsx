@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, Suspense, useState } from "react";
 import styled from "styled-components";
 import TopNavBarTitle from "../components/TopNavBarTitle";
 import ProductItem from "../components/ProductItem";
+import { instance } from "../apis/instance";
+import Spinner from "../components/Spinner";
 
 const Grid = styled.div`
   display: grid;
@@ -12,7 +14,8 @@ const Grid = styled.div`
 `;
 
 const MyLikedPage = () => {
-  const products = [
+  /*
+   const products = [
     {
       productId: 1,
       productImage: "/assets/products/cap.png",
@@ -71,22 +74,41 @@ const MyLikedPage = () => {
       productPrice: 557000,
     },
   ];
+  */
+
+  const [product, setProduct] = useState([]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await instance.get(`/wishlists`);
+        setProduct(response.data.response);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchProduct();
+  });
 
   return (
-    <>
-      <TopNavBarTitle title="찜하기" />
-      <Grid>
-        {products.map((item) => (
-          <ProductItem
-            key={item.productId}
-            productId={item.productId}
-            productImage={item.productImage}
-            productName={item.productName}
-            productPrice={item.productPrice}
-          />
-        ))}
-      </Grid>
-    </>
+    <Suspense fallback={<Spinner />}>
+      {product && (
+        <>
+          <TopNavBarTitle title="찜하기" />
+          <Grid>
+            {product.map((item) => (
+              <ProductItem
+                key={item.productId}
+                productId={item.productId}
+                productImage={item.productImage}
+                productName={item.productName}
+                productPrice={item.productPrice}
+              />
+            ))}
+          </Grid>
+        </>
+      )}
+    </Suspense>
   );
 };
 

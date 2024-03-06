@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ProgressBar from "./ProgressBar";
+import { useParams } from "react-router-dom";
+import { instance } from "../apis/instance";
 
 const Wrapper = styled(Link)`
   display: grid;
@@ -48,23 +50,39 @@ const ProductPrice = styled.div`
 `;
 
 const MyPageOngoingFunding = () => {
+  const [funding, setFundings] = useState({});
+  const { fundingId } = useParams();
+
+  useEffect(() => {
+    const fetchFunding = async () => {
+      try {
+        const response = await instance.get(
+          `/fundings?state={진행 상태}`
+        ); /* url 수정필요 */
+        setFundings(response.body.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  }, [funding, fundingId]);
+
   return (
     <>
-      <Wrapper>
-        <div>진행중인 펀딩</div>
-        <Container>
-          <ImageWrapper>
-            <Image src="/assets/products/nike.png" alt="나이키 에어포스" />
-          </ImageWrapper>
-          <SectionRight>
-            <ProductName>
-              나이키 에어포스1 '07 CW2288-111 올화이트 에어포스원07
-            </ProductName>
-            <ProductPrice>118,000원</ProductPrice>
-            <ProgressBar progress={75} />
-          </SectionRight>
-        </Container>
-      </Wrapper>
+      <div>진행중인 펀딩</div>
+      {fundingId && (
+        <Wrapper to={`/fundings/${fundingId}`}>
+          <Container>
+            <ImageWrapper>
+              <Image src={funding.productImage} alt={funding.productName} />
+            </ImageWrapper>
+            <SectionRight>
+              <ProductName>{fundingId.productName}</ProductName>
+              <ProductPrice>{funding.productPrice}</ProductPrice>
+              <ProgressBar progress={funding.progress} />
+            </SectionRight>
+          </Container>
+        </Wrapper>
+      )}
     </>
   );
 };

@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Radio from "../components/Radio";
 import TopNavBarTitle from "../components/TopNavBarTitle";
 import styled from "styled-components";
 import LongButton from "../components/LongButton";
+import { useParams } from "react-router-dom";
+import { instance } from "../apis/instance";
+import Spinner from "../components/Spinner";
 
 const Section = styled.div`
   display: grid;
@@ -56,6 +59,8 @@ const FundingMessage = styled.textarea`
 const FundingRegisterPage = () => {
   const [eventDate, setEventDate] = useState("");
   const [fundingMessage, setFundingMessage] = useState("");
+  const [product, setProduct] = useState({});
+  const {productId} = useParams();
 
   const handleDateChange = (e) => {
     setEventDate(e.target.value);
@@ -70,60 +75,76 @@ const FundingRegisterPage = () => {
     console.log(fundingMessage);
   }, [eventDate, fundingMessage]);
 
+  useEffect(() => {
+    const fetchFunding = async() => {
+      try {
+        const response = await instance.post(`/fundings`);
+        setProduct(response.body.data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchFunding();
+  }, [product, productId]);
+
   return (
-    <>
-      <TopNavBarTitle title="펀딩 등록" />
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          alert("등록이 완료되었습니다.");
-        }}>
-        <Section>
-          <SubHeading>상품 정보</SubHeading>
-          <ProductArea>
-            <ImageWrapper>
-              <Image src="/assets/products/ps5.png" alt="플레이스테이션5" />
-            </ImageWrapper>
+    <Suspense fallback={<Spinner />}>
+      {product && (
+        <>
+        <TopNavBarTitle title="펀딩 등록" />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            alert("등록이 완료되었습니다.");
+          }}>
+          <Section>
+            <SubHeading>상품 정보</SubHeading>
+            <ProductArea>
+              <ImageWrapper>
+                <Image src={product.productImage} alt={product.productImage}/>
+              </ImageWrapper>
+              <div>
+                <ProductName>{product.productName}</ProductName>
+                <ProductPrice>{product.productPrice}</ProductPrice>
+              </div>
+            </ProductArea>
+          </Section>
+  
+          <Section>
+            <SubHeading>이벤트 구분</SubHeading>
             <div>
-              <ProductName>플레이스테이션 5 디스크 에디션</ProductName>
-              <ProductPrice>458,000원</ProductPrice>
+              <Radio name="event" value="birthday" defaultChecked>
+                생일
+              </Radio>
+              <Radio name="event" value="graduation">
+                졸업
+              </Radio>
+              <Radio name="event" value="babybirthday">
+                돌잔치
+              </Radio>
+              <Radio name="event" value="marriage">
+                결혼
+              </Radio>
             </div>
-          </ProductArea>
-        </Section>
-
-        <Section>
-          <SubHeading>이벤트 구분</SubHeading>
-          <div>
-            <Radio name="event" value="birthday" defaultChecked>
-              생일
-            </Radio>
-            <Radio name="event" value="graduation">
-              졸업
-            </Radio>
-            <Radio name="event" value="babybirthday">
-              돌잔치
-            </Radio>
-            <Radio name="event" value="marriage">
-              결혼
-            </Radio>
-          </div>
-        </Section>
-
-        <Section>
-          <SubHeading>날짜</SubHeading>
-          <input type="date" onChange={handleDateChange} />
-        </Section>
-
-        <Section>
-          <SubHeading>펀딩 메시지</SubHeading>
-          <FundingMessage
-            value={fundingMessage}
-            onChange={handleMessageChange}
-          />
-        </Section>
-        <LongButton type="submit" label="펀딩하기" />
-      </form>
-    </>
+          </Section>
+  
+          <Section>
+            <SubHeading>날짜</SubHeading>
+            <input type="date" onChange={handleDateChange} />
+          </Section>
+  
+          <Section>
+            <SubHeading>펀딩 메시지</SubHeading>
+            <FundingMessage
+              value={fundingMessage}
+              onChange={handleMessageChange}
+            />
+          </Section>
+          <LongButton type="submit" label="펀딩하기" />
+        </form>
+      </>
+      )}
+    </Suspense>
   );
 };
 
