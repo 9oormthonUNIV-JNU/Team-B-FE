@@ -34,7 +34,7 @@ const authSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(loginThunk.fulfilled, (state, action) => {
-      const payloadUserDTO = action.payload.data.userDTO;
+      const payloadUserDTO = action.payload.data.userInfo;
 
       state.isLoggedIn = true;
       state.isLoading = false;
