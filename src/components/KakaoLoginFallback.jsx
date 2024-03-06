@@ -34,7 +34,7 @@ const KakaoLoginFallback = () => {
     dispatch(loginThunk(code))
       .then(unwrapResult)
       .then((response) => {
-        localStorage.setItem("auth", response.data.tokenDTO.accessToken);
+        localStorage.setItem("auth", response.data.tokenInfo.accessToken);
       })
       .then(() => {
         navigate("/");
