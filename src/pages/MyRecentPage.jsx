@@ -1,7 +1,9 @@
-import React from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import styled from "styled-components";
 import ProductItem from "../components/ProductItem";
 import TopNavBarTitle from "../components/TopNavBarTitle";
+import Spinner from "../components/Spinner";
+import { instance } from "../apis/instance";
 
 const Grid = styled.div`
   display: grid;
@@ -12,6 +14,7 @@ const Grid = styled.div`
 `;
 
 const MyRecentPage = () => {
+  /*
   const products = [
     {
       productId: 1,
@@ -70,23 +73,40 @@ const MyRecentPage = () => {
       productName: "플레이스테이션 5 슬림 디지털 에디션",
       productPrice: 557000,
     },
-  ];
+  ]; */
+
+  const [product, setProduct] = useState([]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await instance.get(`/histories`);
+        setProduct(response.data.response);
+        console.log(product);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchProduct();
+  });
 
   return (
-    <>
-      <TopNavBarTitle title="최근 본 상품" />
-      <Grid>
-        {products.map((item) => (
-          <ProductItem
-            key={item.productId}
-            productId={item.productId}
-            productImage={item.productImage}
-            productName={item.productName}
-            productPrice={item.productPrice}
-          />
-        ))}
-      </Grid>
-    </>
+    <Suspense fallback={<Spinner />}>
+      <>
+        <TopNavBarTitle title="최근 본 상품" />
+        <Grid>
+          {product.map((item) => (
+            <ProductItem
+              key={item.productId}
+              productId={item.productId}
+              productImage={item.productImage}
+              productName={item.productName}
+              productPrice={item.productPrice}
+            />
+          ))}
+        </Grid>
+      </>
+    </Suspense>
   );
 };
 

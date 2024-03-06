@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import TopNavBarTitle from "../components/TopNavBarTitle";
 import styled from "styled-components";
 import CircledImage from "../components/CircledImage";
 import LongButton from "../components/LongButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Spinner from "../components/Spinner";
+import { instance } from "../apis/instance";
 
 const Wrapper = styled.div`
   display: grid;
@@ -97,6 +99,8 @@ const FundingMessage = styled.textarea`
 const FundingPaymentPage = () => {
   const [fundingPrice, setFundingPrice] = useState("0");
   const [fundingMessage, setFundingMessage] = useState("");
+  const [fundings, setFunding] = useState({});
+  const {fundingId} = useParams();
 
   const navigate = useNavigate();
 
@@ -108,62 +112,80 @@ const FundingPaymentPage = () => {
     setFundingMessage(e.target.value);
   };
 
+  useEffect(() => {
+    const fetchFunding = async () => {
+      try {
+        const response = await instance.get(`/fundings/${fundingId}/prepare`);
+        setFunding(response.body.data);
+        console.log(fundings);
+      } catch (e) {
+        console.log(3);
+      }
+    };
+
+    fetchFunding();
+  }, [fundings, fundingId]);
+
   return (
-    <>
-      <TopNavBarTitle title="펀딩하기" />
-      <Wrapper>
-        <TopArea>
-          <ImageLabelArea>
-            <CircledImage
-              width={96}
-              height={96}
-              src="/assets/images/person.png"
-              alt="사람 이미지"
-              dDay={2}
+    <Suspense fallback={<Spinner />}>
+      { fundingId && (
+        <>
+        <TopNavBarTitle title="펀딩하기" />
+        <Wrapper>
+          <TopArea>
+            <ImageLabelArea>
+              <CircledImage
+                width={96}
+                height={96}
+                src={fundings.userImage}
+                alt={fundings.userName}
+                dDay={fundings.dday}
+              />
+              <Label>{fundings.userName}</Label>
+            </ImageLabelArea>
+            <Triangle />
+            <ImageLabelArea>
+              <CircledImage
+                width={96}
+                height={96}
+                src={fundings.productId}
+                alt={fundings.productImage}
+              />
+              <Label>{fundings.productName}</Label>
+              <SubLabel>{fundings.productPrice}</SubLabel>
+            </ImageLabelArea>
+          </TopArea>
+  
+          <Section>
+            <SubHeading>금액 선택</SubHeading>
+            <InputArea>
+              <CurrencySign>\</CurrencySign>
+              <PriceInput
+                type="number"
+                value={fundingPrice}
+                onChange={handlePriceChange}
+              />
+            </InputArea>
+            <AveragePrice>평균 펀딩 금액은 {fundings.averageFundingPrice}원이에요!</AveragePrice>
+          </Section>
+          <Section>
+            <SubHeading>축하 메시지를 남겨보세요!</SubHeading>
+            <FundingMessage
+              value={fundingMessage}
+              onChange={handleMessageChange}
             />
-            <Label>이나래</Label>
-          </ImageLabelArea>
-          <Triangle />
-          <ImageLabelArea>
-            <CircledImage
-              width={96}
-              height={96}
-              src="/assets/images/ps5.png"
-              alt="ps5"
-            />
-            <Label>플레이스테이션 5 디스크 에디션</Label>
-            <SubLabel>600,000원</SubLabel>
-          </ImageLabelArea>
-        </TopArea>
-
-        <Section>
-          <SubHeading>금액 선택</SubHeading>
-          <InputArea>
-            <CurrencySign>\</CurrencySign>
-            <PriceInput
-              type="number"
-              value={fundingPrice}
-              onChange={handlePriceChange}
-            />
-          </InputArea>
-          <AveragePrice>평균 펀딩 금액은 45,000원이에요!</AveragePrice>
-        </Section>
-        <Section>
-          <SubHeading>축하 메시지를 남겨보세요!</SubHeading>
-          <FundingMessage
-            value={fundingMessage}
-            onChange={handleMessageChange}
+          </Section>
+  
+          <LongButton
+            label="결제하기"
+            onClick={() => {
+              navigate("/funding/1/payment/result");
+            }}
           />
-        </Section>
-
-        <LongButton
-          label="결제하기"
-          onClick={() => {
-            navigate("/funding/1/payment/result");
-          }}
-        />
-      </Wrapper>
-    </>
+        </Wrapper>
+      </>
+      )}
+    </Suspense>
   );
 };
 
