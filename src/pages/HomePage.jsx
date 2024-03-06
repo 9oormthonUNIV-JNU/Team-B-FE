@@ -1,8 +1,10 @@
-import React from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import FriendsListItem from "../components/FriendsListItem";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import SocialKakao from "../components/SocialKakao";
+import { instance } from "../apis/instance";
+import Spinner from "../components/Spinner";
 
 const Heading = styled.h1`
   font-size: 32px;
@@ -10,33 +12,38 @@ const Heading = styled.h1`
 `;
 
 const HomePage = () => {
+  const [friendsList, setFriendsList] = useState([]);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await instance.get("/fundings/1");
+        setFriendsList(response.data.response);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchFriends();
+  }, []);
+
   return (
-    <>
+    <Suspense fallback={<Spinner />}>
       {isLoggedIn ? (
         <>
           <Heading>친구</Heading>
-          <FriendsListItem
-            fundingId={1}
-            userImage="/assets/images/person.png"
-            userName="이나래"
-            eventType="생일"
-            eventDate="2월 28일"
-            productName="플레이스테이션 5 디스크 에디션"
-            fundingProgress={75}
-            productImage="/assets/images/ps5.png"
-          />
-          <FriendsListItem
-            fundingId={2}
-            userImage="/assets/images/person.png"
-            userName="이나래"
-            eventType="생일"
-            eventDate="2월 28일"
-            productName="플레이스테이션 5 디스크 에디션"
-            fundingProgress={75}
-            productImage="/assets/images/ps5.png"
-          />
+          {friendsList &&
+            friendsList.map((item) => (
+              <FriendsListItem
+                userName={item.userName}
+                eventType={item.eventType}
+                eventDate={item.date}
+                productName={item.productName}
+                fundingProgress={item.progress}
+                productImage={item.productImage}
+              />
+            ))}
         </>
       ) : (
         <>
@@ -44,7 +51,7 @@ const HomePage = () => {
           <SocialKakao />
         </>
       )}
-    </>
+    </Suspense>
   );
 };
 

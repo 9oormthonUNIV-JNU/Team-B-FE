@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import LongButton from "../components/LongButton";
 import styled from "styled-components";
 import Modal from "../components/Modal";
-import { useNavigate } from "react-router-dom";
-import TopNavBarTitle from "../components/TopNavBarTitle";
+import { useNavigate, useParams } from "react-router-dom";
+import { instance } from "../apis/instance";
+import Spinner from "../components/Spinner";
 
 const ImageWrapper = styled.div`
   width: 100%;
@@ -66,53 +67,64 @@ const ProductDescription = styled.p`
 const ProductDetailPage = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [product, setProduct] = useState({});
+  const { productId } = useParams();
 
   const handleClick = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await instance.get(`/products/${productId}`);
+        setProduct(response.body.data);
+        console.log(product);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchProduct();
+  }, [product, productId]);
 
   return (
-    <>
-    <TopNavBarTitle title="상품 상세페이지" />
-      <ImageWrapper>
-        <Image src="/assets/products/ps5.png" alt="ps5" />
-      </ImageWrapper>
-      <ProudctName>플레이스테이션 5 디스크 에디션</ProudctName>
-      <ProductPrice>458,000원</ProductPrice>
-      <hr />
-      <SubHeading>상품 설명</SubHeading>
-      <ProductDescription>
-        빛이 그대로 살아 있는 나이키 에어 포스 1 ’07은 OG 농구화로서 많은 사랑을
-        받아온 디자인에 새로운 멋을 더했습니다. 튼튼하게 스티치 처리된
-        오버레이와 깔끔한 마감 처리, 과하지 않은 절제된 화려함으로 빛나는
-        존재감을 발휘해 보세요.
-        <br />
-        <br />- 현재 컬러: 화이트/화이트
-        <br />- 스타일 번호: CW2288-111
-      </ProductDescription>
-      <LongButton label="펀딩 받기" onClick={handleClick} />
-      <Modal
-        isOpen={isModalOpen}
-        title="펀딩을 시작할까요?"
-        handleClick={handleClick}>
-        <ModalProductArea>
-          <ModalImageWrapper>
-            <Image src="/assets/products/ps5.png" alt="ps5" />
-          </ModalImageWrapper>
-          <div>
-            <ModalProductName>플레이스테이션 5 디스크 에디션</ModalProductName>
-            <ModalProductPrice>458,000원</ModalProductPrice>
-          </div>
-        </ModalProductArea>
-        <LongButton
-          label="시작하기"
-          onClick={() => {
-            navigate("/shop/product/1/funding");
-          }}
-        />
-      </Modal>
-    </>
+    <Suspense fallback={<Spinner />}>
+      {product && (
+        <>
+          <ImageWrapper>
+            <Image src={product.productImage} alt={product.productName} />
+          </ImageWrapper>
+          <ProudctName>{product.productName}</ProudctName>
+          <ProductPrice>{product.productPrice}원</ProductPrice>
+          <hr />
+          <SubHeading>상품 설명</SubHeading>
+          <ProductDescription>{product.productDescription}</ProductDescription>
+          <LongButton label="펀딩 받기" onClick={handleClick} />
+          <Modal
+            isOpen={isModalOpen}
+            title="펀딩을 시작할까요?"
+            handleClick={handleClick}>
+            <ModalProductArea>
+              <ModalImageWrapper>
+                <Image src={product.productImage} alt={product.productName} />
+              </ModalImageWrapper>
+              <div>
+                <ModalProductName>{product.productName}</ModalProductName>
+                <ModalProductPrice>{product.productPrice}원</ModalProductPrice>
+              </div>
+            </ModalProductArea>
+
+            <LongButton
+              label="시작하기"
+              onClick={() => {
+                navigate(`/shop/product/${productId}/funding`);
+              }}
+            />
+          </Modal>
+        </>
+      )}
+    </Suspense>
   );
 };
 

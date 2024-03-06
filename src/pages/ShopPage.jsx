@@ -44,15 +44,16 @@ const ShopPage = () => {
       <ImageCarousel images={images} />
       <Suspense fallback={<Spinner />}>
         <Grid>
-          {products.map((item) => (
-            <ProductItem
-              key={item.productId}
-              productId={item.productId}
-              productImage={item.productImage}
-              productName={item.productName}
-              productPrice={item.productPrice}
-            />
-          ))}
+          {products &&
+            products.map((item) => (
+              <ProductItem
+                key={item.productId}
+                productId={item.productId}
+                productImage={item.productImage}
+                productName={item.productName}
+                productPrice={item.productPrice}
+              />
+            ))}
         </Grid>
       </Suspense>
     </>

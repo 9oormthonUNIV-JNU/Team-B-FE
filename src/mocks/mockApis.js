@@ -21,16 +21,14 @@ export const products = {
 // 상품 상세 페이지
 export const productDetail = {
   success: true,
-  response: [
-    {
-      productId: 1,
-      productName: "닌텐도 스위치 OLED모델",
-      productPrice: 409540,
-      productImage: "/images/1.jpg",
-      productDescription:
-        "본 제품은 닌텐도 정품이며, 전자제품 특성상 포장훼손 및 개봉 시 변심 반품이 불가하므로 구매시 유의 바랍니다.",
-    },
-  ],
+  response: {
+    productId: 1,
+    productName: "닌텐도 스위치 OLED모델",
+    productPrice: 409540,
+    productImage: "/images/1.jpg",
+    productDescription:
+      "본 제품은 닌텐도 정품이며, 전자제품 특성상 포장훼손 및 개봉 시 변심 반품이 불가하므로 구매시 유의 바랍니다.",
+  },
   error: null,
 };
 
