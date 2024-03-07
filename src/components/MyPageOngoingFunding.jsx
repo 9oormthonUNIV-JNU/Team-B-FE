@@ -64,6 +64,8 @@ const MyPageOngoingFunding = () => {
         console.log(e);
       }
     };
+
+    fetchFunding();
   }, [funding, fundingId]);
 
   return (

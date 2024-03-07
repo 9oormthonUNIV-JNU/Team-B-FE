@@ -29,7 +29,8 @@ const ShopPage = () => {
     const fetchProducts = async () => {
       try {
         const response = await instance.get("/products");
-        setProducts(response.data.response);
+        setProducts(response.data.data);
+        console.log(response);
       } catch (e) {
         console.log(e);
       }
