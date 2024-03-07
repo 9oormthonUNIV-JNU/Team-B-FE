@@ -1,4 +1,10 @@
 import React from "react";
+import styled from "styled-components";
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+`;
 
 const SocialKakao = () => {
   const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
@@ -9,7 +15,11 @@ const SocialKakao = () => {
     window.location.href = KAKAO_URL;
   };
 
-  return <button onClick={handleLogin}>카카오 로그인</button>;
+  return (
+    <div onClick={handleLogin}>
+      <Image src="/assets/kakao_login_medium_wide.png" alt="카카오 로그인" />
+    </div>
+  );
 };
 
 export default SocialKakao;

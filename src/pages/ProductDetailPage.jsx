@@ -78,15 +78,15 @@ const ProductDetailPage = () => {
     const fetchProduct = async () => {
       try {
         const response = await instance.get(`/products/${productId}`);
-        setProduct(response.body.data);
-        console.log(product);
+        setProduct(response.data.data);
       } catch (e) {
         console.log(e);
       }
     };
+    console.log("Rerendered");
 
     fetchProduct();
-  }, [product, productId]);
+  }, [productId]);
 
   return (
     <Suspense fallback={<Spinner />}>

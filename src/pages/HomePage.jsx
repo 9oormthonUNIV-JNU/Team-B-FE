@@ -11,6 +11,19 @@ const Heading = styled.h1`
   font-weight: 700;
 `;
 
+const LandingPage = styled.div`
+  display: grid;
+  height: 80vh;
+  align-items: end;
+
+  > .wrapper {
+    text-align: center;
+    color: #8c8c8c;
+    font-size: 14px;
+    line-height: 3em;
+  }
+`;
+
 const HomePage = () => {
   const [friendsList, setFriendsList] = useState([]);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -18,8 +31,8 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const response = await instance.get("/fundings/1");
-        setFriendsList(response.data.response);
+        const response = await instance.get("/fundings");
+        setFriendsList(response.data.data);
       } catch (e) {
         console.log(e);
       }
@@ -33,7 +46,7 @@ const HomePage = () => {
       {isLoggedIn ? (
         <>
           <Heading>친구</Heading>
-          {friendsList &&
+          {friendsList.length ? (
             friendsList.map((item) => (
               <FriendsListItem
                 userName={item.userName}
@@ -43,12 +56,20 @@ const HomePage = () => {
                 fundingProgress={item.progress}
                 productImage={item.productImage}
               />
-            ))}
+            ))
+          ) : (
+            <div>친구가 없습니다</div>
+          )}
         </>
       ) : (
         <>
-          <div>gifty</div>
-          <SocialKakao />
+          <LandingPage>
+            <div className="wrapper">
+              <img src="/assets/Logo.svg" alt="기프티 로고" width={200} />
+              <div>모바일 선물하기 펀딩 서비스</div>
+            </div>
+            <SocialKakao />
+          </LandingPage>
         </>
       )}
     </Suspense>
