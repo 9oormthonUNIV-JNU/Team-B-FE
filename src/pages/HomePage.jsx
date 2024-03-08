@@ -33,6 +33,8 @@ const HomePage = () => {
       try {
         const response = await instance.get("/fundings");
         setFriendsList(response.data.data);
+        console.log("/fundings");
+        console.log(response);
       } catch (e) {
         console.log(e);
       }
@@ -49,9 +51,11 @@ const HomePage = () => {
           {friendsList.length ? (
             friendsList.map((item) => (
               <FriendsListItem
-                userName={item.userName}
-                eventType={item.eventType}
-                eventDate={item.date}
+                key={item.fundingId}
+                fundingId={item.fundingId}
+                userImage={item.friendProfileImage}
+                userName={item.friendNickname}
+                eventType={item.event}
                 productName={item.productName}
                 fundingProgress={item.progress}
                 productImage={item.productImage}

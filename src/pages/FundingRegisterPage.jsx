@@ -3,9 +3,10 @@ import Radio from "../components/Radio";
 import TopNavBarTitle from "../components/TopNavBarTitle";
 import styled from "styled-components";
 import LongButton from "../components/LongButton";
-import { useParams } from "react-router-dom";
 import { instance } from "../apis/instance";
 import Spinner from "../components/Spinner";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Section = styled.div`
   display: grid;
@@ -37,10 +38,10 @@ const Image = styled.img`
 `;
 
 const ProductName = styled.div`
-  overflow: hidden;
+  /* overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  word-break: break-all;
+  word-break: break-all; */
 `;
 
 const ProductPrice = styled.div`
@@ -56,11 +57,24 @@ const FundingMessage = styled.textarea`
   padding: 16px;
 `;
 
+const Form = styled.form`
+  padding: 16px 0;
+  display: grid;
+  gap: 24px;
+`;
+
 const FundingRegisterPage = () => {
+  const { productId, productName, productImage, productPrice } = useSelector(
+    (state) => state.product
+  );
+
+  const navigate = useNavigate();
+
   const [eventDate, setEventDate] = useState("");
+  const [eventStartDate, setEventStartDate] = useState("");
+  const [eventEndDate, setEventEndDate] = useState("");
   const [fundingMessage, setFundingMessage] = useState("");
-  const [product, setProduct] = useState({});
-  const {productId} = useParams();
+  const [eventType, setEventType] = useState("BIRTHDAY");
 
   const handleDateChange = (e) => {
     setEventDate(e.target.value);
@@ -71,68 +85,107 @@ const FundingRegisterPage = () => {
   };
 
   useEffect(() => {
-    console.log(eventDate);
-    console.log(fundingMessage);
-  }, [eventDate, fundingMessage]);
+    if (eventDate) {
+      const TWO_WEEKS = 1000 * 60 * 60 * 24 * 14;
+      const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
-  useEffect(() => {
-    const fetchFunding = async() => {
-      try {
-        const response = await instance.post(`/fundings`);
-        setProduct(response.body.data);
-      } catch (e) {
-        console.log(e);
-      }
+      const event = new Date(eventDate);
+
+      const startDate = new Date(event - TWO_WEEKS);
+      const endDate = new Date(event);
+      endDate.setTime(endDate.getTime() + ONE_WEEK);
+
+      // setEventStartDate(
+      //   `${startDate.getFullYear()}-${String(startDate.getMonth() + 1).padStart(
+      //     2,
+      //     0
+      //   )}-${String(startDate.getDate()).padStart(2, 0)}`
+      // );
+      // setEventEndDate(
+      //   `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(
+      //     2,
+      //     0
+      //   )}-${String(endDate.getDate()).padStart(2, 0)}`
+      // );
+
+      setEventStartDate(startDate.toISOString());
+      setEventEndDate(endDate.toISOString());
     }
-    fetchFunding();
-  }, [product, productId]);
+  }, [eventDate]);
+
+  const registerFunding = async () => {
+    return await instance.post("/fundings", {
+      productId,
+      event: eventType,
+      startDate: eventStartDate,
+      endDate: eventEndDate,
+      message: fundingMessage,
+    });
+  };
+
+  const handleSelect = (e) => {
+    if (!e.target.value) return;
+    setEventType(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    registerFunding()
+      .then(() => {
+        alert("등록이 완료되었습니다.");
+        navigate("/");
+      })
+      .catch((e) => {
+        alert("일시적인 오류로 등록에 실패했습니다.");
+      });
+  };
 
   return (
     <Suspense fallback={<Spinner />}>
-      {product && (
-        <>
+      <>
         <TopNavBarTitle title="펀딩 등록" />
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            alert("등록이 완료되었습니다.");
-          }}>
+        <Form onSubmit={handleSubmit}>
           <Section>
             <SubHeading>상품 정보</SubHeading>
             <ProductArea>
               <ImageWrapper>
-                <Image src={product.productImage} alt={product.productImage}/>
+                <Image src={productImage} alt={productName} />
               </ImageWrapper>
               <div>
-                <ProductName>{product.productName}</ProductName>
-                <ProductPrice>{product.productPrice}</ProductPrice>
+                <ProductName>{productName}</ProductName>
+                <ProductPrice>{productPrice.toLocaleString()}원</ProductPrice>
               </div>
             </ProductArea>
           </Section>
-  
+
           <Section>
             <SubHeading>이벤트 구분</SubHeading>
-            <div>
-              <Radio name="event" value="birthday" defaultChecked>
+            <div onClick={handleSelect}>
+              <Radio name="event" value="BIRTHDAY" defaultChecked>
                 생일
               </Radio>
-              <Radio name="event" value="graduation">
+              <Radio name="event" value="GRADUATION">
                 졸업
               </Radio>
-              <Radio name="event" value="babybirthday">
+              <Radio name="event" value="FIRST_BIRTHDAY_PARTY">
                 돌잔치
               </Radio>
-              <Radio name="event" value="marriage">
+              <Radio name="event" value="MARRIAGE">
                 결혼
               </Radio>
             </div>
           </Section>
-  
+
           <Section>
             <SubHeading>날짜</SubHeading>
             <input type="date" onChange={handleDateChange} />
+            {eventDate && (
+              <div>
+                펀딩 기간: {eventStartDate} ~ {eventEndDate}
+              </div>
+            )}
           </Section>
-  
+
           <Section>
             <SubHeading>펀딩 메시지</SubHeading>
             <FundingMessage
@@ -141,9 +194,8 @@ const FundingRegisterPage = () => {
             />
           </Section>
           <LongButton type="submit" label="펀딩하기" />
-        </form>
+        </Form>
       </>
-      )}
     </Suspense>
   );
 };

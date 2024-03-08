@@ -8,6 +8,7 @@ import {
   buildStyles,
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { convertEvent } from "../utils/convertEvent";
 
 const Wrapper = styled(Link)`
   display: flex;
@@ -64,42 +65,41 @@ const FriendsListItem = ({
   userImage,
   userName,
   eventType,
-  eventDate,
   productName,
   fundingProgress,
   productImage,
 }) => {
   return (
-    <Wrapper to={fundingId && `/funding/${fundingId}`}>
+    <Wrapper to={fundingId !== -1 && `/funding/${fundingId}`}>
       <SectionLeft>
         <CircledImage src={userImage} alt={userName} />
         <ProfileArea>
           <UserName>{userName}</UserName>
-          <EventDate>
-            {eventType}, {eventDate}
-          </EventDate>
+          {fundingId !== -1 && <EventDate>{convertEvent(eventType)}</EventDate>}
         </ProfileArea>
       </SectionLeft>
-      <SectionRight>
-        <ProductArea>
-          <ProductName>{productName}</ProductName>
-          {fundingProgress && <GradientText>{fundingProgress}%</GradientText>}
-        </ProductArea>
-        <ProgressBarWrapper>
-          <CircularProgressbarWithChildren
-            value={fundingProgress}
-            styles={buildStyles({
-              pathColor: "#FF7A00",
-            })}>
-            <CircledImage
-              src={productImage}
-              alt={productName}
-              width={40}
-              height={40}
-            />
-          </CircularProgressbarWithChildren>
-        </ProgressBarWrapper>
-      </SectionRight>
+      {fundingId !== -1 && (
+        <SectionRight>
+          <ProductArea>
+            <ProductName>{productName}</ProductName>
+            <GradientText>{fundingProgress}%</GradientText>
+          </ProductArea>
+          <ProgressBarWrapper>
+            <CircularProgressbarWithChildren
+              value={fundingProgress}
+              styles={buildStyles({
+                pathColor: "#FF7A00",
+              })}>
+              <CircledImage
+                src={productImage}
+                alt={productName}
+                width={40}
+                height={40}
+              />
+            </CircularProgressbarWithChildren>
+          </ProgressBarWrapper>
+        </SectionRight>
+      )}
     </Wrapper>
   );
 };

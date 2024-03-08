@@ -5,6 +5,10 @@ import Modal from "../components/Modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { instance } from "../apis/instance";
 import Spinner from "../components/Spinner";
+import LikeButton from "../components/LikeButton";
+import { productThunk } from "../store/slices/productSlice";
+import { useDispatch } from "react-redux";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 const ImageWrapper = styled.div`
   width: 100%;
@@ -27,10 +31,10 @@ const ModalImageWrapper = styled.div`
 `;
 
 const ModalProductName = styled.div`
-  overflow: hidden;
+  /* overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  word-break: break-all;
+  word-break: break-all; */
 `;
 
 const ModalProductPrice = styled.div`
@@ -64,29 +68,62 @@ const ProductDescription = styled.p`
   font-size: 14px;
 `;
 
+const SpaceBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const ProductDetailPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { productId } = useParams();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [product, setProduct] = useState({});
-  const { productId } = useParams();
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleClick = () => {
     setIsModalOpen(!isModalOpen);
   };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await instance.get(`/products/${productId}`);
-        setProduct(response.data.data);
-      } catch (e) {
+    dispatch(productThunk(productId))
+      .then(unwrapResult)
+      .then((data) => {
+        setProduct(data.data);
+      })
+      .catch((e) => {
         console.log(e);
+      });
+  }, [dispatch, productId]);
+
+  useEffect(() => {
+    const fetchLike = async () => {
+      try {
+        const response = await instance.get(`/products/${productId}/wishlists`);
+        if (response.data.status === "success") setIsLiked(true);
+      } catch (e) {
+        setIsLiked(false);
       }
     };
-    console.log("Rerendered");
 
-    fetchProduct();
-  }, [productId]);
+    fetchLike();
+  }, []);
+
+  const handleLike = async () => {
+    try {
+      if (isLiked) {
+        await instance.delete(`/products/${productId}/wishlists`);
+        setIsLiked(false);
+      } else {
+        await instance.post(`/products/${productId}/wishlists`);
+        setIsLiked(true);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Suspense fallback={<Spinner />}>
@@ -96,7 +133,10 @@ const ProductDetailPage = () => {
             <Image src={product.productImage} alt={product.productName} />
           </ImageWrapper>
           <ProudctName>{product.productName}</ProudctName>
-          <ProductPrice>{product.productPrice}원</ProductPrice>
+          <SpaceBetween>
+            <ProductPrice>{product.productPrice}원</ProductPrice>
+            <LikeButton isLiked={isLiked} handleClick={handleLike} />
+          </SpaceBetween>
           <hr />
           <SubHeading>상품 설명</SubHeading>
           <ProductDescription>{product.productDescription}</ProductDescription>
