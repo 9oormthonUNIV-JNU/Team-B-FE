@@ -70,6 +70,7 @@ const MyPage = () => {
             <LongButton
               label="로그아웃"
               onClick={() => {
+                localStorage.clear("auth");
                 dispatch(logout());
                 navigate("/");
               }}

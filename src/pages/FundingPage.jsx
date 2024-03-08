@@ -1,4 +1,4 @@
-import React, {Suspense, useState, useEffect} from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import TopNavBarTitle from "../components/TopNavBarTitle";
 import CircledImage from "../components/CircledImage";
 import styled from "styled-components";
@@ -75,75 +75,86 @@ const FundedPrice = styled.div`
 const FundingPage = () => {
   const navigate = useNavigate();
   const [fundings, setFundings] = useState({});
-  const {fundingId} = useParams();
+  const { fundingId } = useParams();
+
+  const computeDday = (end) => {
+    const now = new Date();
+    const endDate = new Date(end);
+    const distance = endDate - now;
+    const dDay = Math.floor(distance / (1000 * 60 * 60 * 24));
+    return dDay;
+  };
 
   useEffect(() => {
-    const fetchFunding = async() => {
+    const fetchFunding = async () => {
       try {
         const response = await instance.get(`/fundings/${fundingId}`);
-        setFundings(response.body.data);
+        setFundings(response.data.data);
       } catch (e) {
         console.log(e);
       }
-    }
+    };
     fetchFunding();
-  }, [fundings, fundingId]);
+  }, []);
 
   return (
     <Suspense fallback={<Spinner />}>
-      { fundingId && (
+      {fundingId && (
         <>
-        <TopNavBarTitle title="진행중인 펀딩" />
-        <Wrapper>
-          <Section>
-            <UserImageArea>
-              <CircledImage
-                width={96}
-                height={96}
-                src={fundings.userImage} 
-                alt={fundings.userName}
-                dDay={fundings.dday} 
-              />
-            </UserImageArea>
-            <UserName>{fundings.userName}</UserName>
-          </Section>
-  
-          <Section>
-            <ProductImageWrapper>
-              <ProductImage src={fundings.productImage} alt={fundings.productName} />
-            </ProductImageWrapper>
-            <ProductName>{fundings.productName}</ProductName>
-            <MessageBox>
-              {fundings.message}
-            </MessageBox>
-          </Section>
-  
-          <Section>
-            <SubHeading>펀딩 진행률</SubHeading>
-            <ProgressBar progress={fundings.progress} showNumber />
-          </Section>
-  
-          <Section>
-            <SubHeading>펀딩 금액</SubHeading>
-            <FundedPrice>
-              <GradientText fontSize={24}>{fundings.fundedPrice}</GradientText>
-              <GradientText fontSize={24} toGray>
-                /
-              </GradientText>
-              <GradientText fontSize={24} toGray>
-                {fundings.originalPrice}
-              </GradientText>
-            </FundedPrice>
-          </Section>
-          <LongButton
-            label="펀딩하기"
-            onClick={() => {
-              navigate("/funding/1/payment");
-            }}
-          />
-        </Wrapper>
-      </>
-      )}   
+          <TopNavBarTitle title="진행중인 펀딩" />
+          <Wrapper>
+            <Section>
+              <UserImageArea>
+                <CircledImage
+                  width={96}
+                  height={96}
+                  src={fundings.userProfileImage}
+                  alt={fundings.userNickname}
+                  dDay={computeDday(fundings.endDate)}
+                />
+              </UserImageArea>
+              <UserName>{fundings.userNickname}</UserName>
+            </Section>
+
+            <Section>
+              <ProductImageWrapper>
+                <ProductImage
+                  src={fundings.productImage}
+                  alt={fundings.productName}
+                />
+              </ProductImageWrapper>
+              <ProductName>{fundings.productName}</ProductName>
+              <MessageBox>{fundings.message}</MessageBox>
+            </Section>
+
+            <Section>
+              <SubHeading>펀딩 진행률</SubHeading>
+              <ProgressBar progress={fundings.progress} showNumber />
+            </Section>
+
+            <Section>
+              <SubHeading>펀딩 금액</SubHeading>
+              <FundedPrice>
+                <GradientText fontSize={24}>
+                  {fundings.totalAmount}
+                </GradientText>
+                <GradientText fontSize={24} toGray>
+                  /
+                </GradientText>
+                <GradientText fontSize={24} toGray>
+                  {fundings.productPrice}
+                </GradientText>
+              </FundedPrice>
+            </Section>
+            <LongButton
+              label="펀딩하기"
+              onClick={() => {
+                navigate("/funding/1/payment");
+              }}
+            />
+          </Wrapper>
+        </>
+      )}
     </Suspense>
   );
 };
