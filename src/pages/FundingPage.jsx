@@ -95,7 +95,7 @@ const FundingPage = () => {
       }
     };
     fetchFunding();
-  }, []);
+  }, [fundingId]);
 
   return (
     <Suspense fallback={<Spinner />}>
