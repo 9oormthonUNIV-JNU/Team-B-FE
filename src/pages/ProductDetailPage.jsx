@@ -109,7 +109,7 @@ const ProductDetailPage = () => {
     };
 
     fetchLike();
-  }, []);
+  }, [productId]);
 
   const handleLike = async () => {
     try {
